@@ -31,16 +31,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", require("./src/routes/index.routes"));
 //not found page
 app.all("*", (req, res, next) => {
-  next(new ApiError("Page Not Found", 404));
+  next(new ApiError(`Route Not Found ${req.originalUrl}`, 404));
 });
-//handle server error
+//handle error from express
 app.use(globalMiddlewareError);
 
 //run server
 const server = app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}......`);
 });
-
+// handling rejection outside express
 process.on("rejectionHandled", (err) => {
   console.error(`handleRejection : ${err.name} | ${err.message}`);
   server.close(() => {
