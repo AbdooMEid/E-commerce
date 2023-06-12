@@ -8,6 +8,7 @@ const categorySchema = Schema(
       unique: [true, "category name must be unique"],
       minlength: [3, "Too short category name"],
       maxlength: [32, "Too long category name"],
+      trim: true,
     },
     slug: {
       type: String,
