@@ -30,7 +30,9 @@ exports.createSubCategoryValidator = [
 exports.updateSubCategoryValidator = [
   check("id").isMongoId().withMessage("InValid subCategory Id"),
   check("name").custom((val, { req }) => {
-    req.body.slug = slugify(val);
+    if (req.body.slug) {
+      req.body.slug = slugify(val);
+    }
     return true;
   }),
   validatorMiddleware,

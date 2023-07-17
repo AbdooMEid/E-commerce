@@ -1,8 +1,26 @@
 const Category = require("./category.model");
+const sharp = require("sharp");
 const { deleteHandling } = require("../Handler/deleteHandler");
 const { updateHandler } = require("../Handler/updateHandler");
 const { createHandler } = require("../Handler/createHandler");
 const { getSpecificHandler, getAllHandler } = require("../Handler/getHandler");
+const { asyncHandling } = require("../../utils/Error/asyncHandler");
+const { uploadSingleImage } = require("../../middleware/uploadImage");
+
+// upload single Image
+const uploadImage = uploadSingleImage("image");
+// resize Image
+const resizeImage = asyncHandling(async (req, res, next) => {
+  console.log(req.file);
+  const fileName = `category-${Date.now()}-${Math.random() * 1000}.jpeg`;
+  await sharp(req.file.buffer)
+    .resize(900, 900)
+    .toFormat("jpeg")
+    .jpeg({ quality: 90 })
+    .toFile(`uploads/category/${fileName}`);
+  req.body.image = fileName;
+  next();
+});
 //@desc   Create Category
 //@route  Post /api/v1/Category
 //@access Privet
@@ -29,4 +47,6 @@ module.exports = {
   getSpecificCategory,
   updateCategory,
   deleteCategory,
+  uploadImage,
+  resizeImage,
 };

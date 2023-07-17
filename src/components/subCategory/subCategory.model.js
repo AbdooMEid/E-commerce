@@ -25,7 +25,7 @@ const subCategorySchema = Schema(
 subCategorySchema.pre(/^find/, function (next) {
   this.populate({
     path: "categoryId",
-    select: "name",
+    select: "name , -_id",
   });
   next();
 });

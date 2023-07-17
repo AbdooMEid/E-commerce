@@ -1,7 +1,7 @@
 process.on("uncaughtException", (err) => {
   console.error(`uncaughtException : ${err.message} || ${err.stack}`);
 });
-
+const path = require("path");
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +26,7 @@ if (process.env.ENV_MODE === "development") {
 //middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "uploads")));
 
 //route mount
 app.use("/", require("./src/routes/index.routes"));

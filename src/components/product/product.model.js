@@ -74,11 +74,30 @@ const ProductSchema = Schema(
 ProductSchema.pre(/^find/, function (next) {
   this.populate({
     path: "categoryId",
-    select: "name",
+    select: "name , _id",
   });
   next();
 });
-
+const setImageURL = (doc) => {
+  let images = [];
+  if (doc.imageCover) {
+    doc.imageCover = `${process.env.IMAGE_URL}/products/${doc.imageCover}`;
+  }
+  if (doc.images) {
+    doc.images.forEach((ele) => {
+      images.push(`${process.env.IMAGE_URL}/products/${ele}`);
+    });
+    doc.images = images;
+  }
+};
+// find,findOne,update
+ProductSchema.post("init", (doc) => {
+  setImageURL(doc);
+});
+// create
+ProductSchema.post("save", (doc) => {
+  setImageURL(doc);
+});
 const Product = model("Product", ProductSchema);
 
 module.exports = Product;

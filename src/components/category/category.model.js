@@ -14,13 +14,21 @@ const categorySchema = Schema(
       type: String,
       lowercase: true,
     },
-    image: {
-      type: String,
-    },
+    image: String,
   },
   { timestamps: true }
 );
-
+const setImageURL = (doc) => {
+  if (doc.image) {
+    doc.image = `${process.env.IMAGE_URL}/category/${doc.image}`;
+  }
+};
+categorySchema.post("init", (doc) => {
+  setImageURL(doc);
+});
+categorySchema.post("save", (doc) => {
+  setImageURL(doc);
+});
 const category = model("Category", categorySchema);
 
 module.exports = category;
