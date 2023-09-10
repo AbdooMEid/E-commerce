@@ -1,5 +1,5 @@
 const ApiError = require("../../utils/Error/ApiError");
-const { asyncHandling } = require("../../utils/Error/asyncHandler");
+const asyncHandling = require("express-async-handler");
 const ApiFeatures = require("../../utils/features/ApiFeatures");
 
 exports.getSpecificHandler = (modelName) => {

@@ -1,4 +1,5 @@
 const router = require("express").Router({ mergeParams: true });
+const { protect, allowedTo } = require("../../config/auth");
 const {
   getSpecificSubCategoryValidator,
   updateSubCategoryValidator,
@@ -17,11 +18,27 @@ const {
 
 router
   .route("/")
-  .post(setCategoryIdToBody, createSubCategoryValidator, addSubCategory)
+  .post(
+    protect,
+    allowedTo("admin"),
+    setCategoryIdToBody,
+    createSubCategoryValidator,
+    addSubCategory
+  )
   .get(createFilterObj, getAllSubCategories);
 router
   .route("/:id")
   .get(getSpecificSubCategoryValidator, getSpecificSubCategory)
-  .put(updateSubCategoryValidator, updateSubCategory)
-  .delete(deleteSubCategoryValidator, deleteSubCategory);
+  .put(
+    protect,
+    allowedTo("admin"),
+    updateSubCategoryValidator,
+    updateSubCategory
+  )
+  .delete(
+    protect,
+    allowedTo("admin"),
+    deleteSubCategoryValidator,
+    deleteSubCategory
+  );
 module.exports = router;

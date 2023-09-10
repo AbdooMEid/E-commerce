@@ -4,7 +4,7 @@ const { updateHandler } = require("../Handler/updateHandler");
 const { createHandler } = require("../Handler/createHandler");
 const { getSpecificHandler, getAllHandler } = require("../Handler/getHandler");
 const { uploadSingleImage } = require("../../middleware/uploadImage");
-const { asyncHandling } = require("../../utils/Error/asyncHandler");
+const asyncHandling = require("express-async-handler");
 const sharp = require("sharp");
 
 //upload single Image

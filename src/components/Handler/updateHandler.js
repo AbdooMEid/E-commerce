@@ -1,4 +1,4 @@
-const { asyncHandling } = require("../../utils/Error/asyncHandler");
+const asyncHandling = require("express-async-handler");
 const ApiError = require("../../utils/Error/ApiError");
 
 exports.updateHandler = (modelName) => {

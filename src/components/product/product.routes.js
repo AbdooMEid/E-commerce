@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const { protect, allowedTo } = require("../../config/auth");
 const {
   getSpecificProductValidator,
   createProductValidator,
@@ -16,11 +17,25 @@ const {
 } = require("./product.service");
 router
   .route("/")
-  .post(uploadImage, resizeMultiImages, createProductValidator, addProduct)
+  .post(
+    protect,
+    allowedTo("admin"),
+    uploadImage,
+    resizeMultiImages,
+    createProductValidator,
+    addProduct
+  )
   .get(getAllProduct);
 router
   .route("/:id")
   .get(getSpecificProductValidator, getSpecificProduct)
-  .put(uploadImage, resizeMultiImages, updateProductValidator, updateProduct)
-  .delete(deleteProductValidator, deleteProduct);
+  .put(
+    protect,
+    allowedTo("admin"),
+    uploadImage,
+    resizeMultiImages,
+    updateProductValidator,
+    updateProduct
+  )
+  .delete(protect, allowedTo("admin"), deleteProductValidator, deleteProduct);
 module.exports = router;

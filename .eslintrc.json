@@ -13,7 +13,7 @@
     "no-return-await": "off",
     "no-underscore-dangle": "off",
     "class-methods-use-this": "off",
-    "no-undef": "error",
+    "no-undef": "warn",
     "node/no-unsupported-features/es-syntax": "off",
     "no-unused-expressions": "off",
     "arrow-body-style": "off",
@@ -22,6 +22,7 @@
     "new-cap": "off",
     "import/newline-after-import": "off",
     "import/no-extraneous-dependencies": "off",
+    "prefer-arrow-callback": "off",
     "prefer-destructuring": ["error", { "object": true, "array": false }],
     "no-unused-vars": ["warn", { "argsIgnorePattern": "req|res|next|val" }]
   }

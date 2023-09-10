@@ -4,14 +4,16 @@ const { deleteHandling } = require("../Handler/deleteHandler");
 const { updateHandler } = require("../Handler/updateHandler");
 const { createHandler } = require("../Handler/createHandler");
 const { getSpecificHandler, getAllHandler } = require("../Handler/getHandler");
-const { asyncHandling } = require("../../utils/Error/asyncHandler");
+const asyncHandling = require("express-async-handler");
 const { uploadSingleImage } = require("../../middleware/uploadImage");
 
 // upload single Image
 const uploadImage = uploadSingleImage("image");
 // resize Image
 const resizeImage = asyncHandling(async (req, res, next) => {
-  console.log(req.file);
+  if (!req.file) {
+    return next();
+  }
   const fileName = `category-${Date.now()}-${Math.random() * 1000}.jpeg`;
   await sharp(req.file.buffer)
     .resize(900, 900)

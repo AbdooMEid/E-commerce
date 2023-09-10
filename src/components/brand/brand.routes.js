@@ -1,4 +1,5 @@
 const router = require("express").Router({ mergeParams: true });
+const { protect, allowedTo } = require("../../config/auth");
 const {
   createBrandValidator,
   updateBrandValidator,
@@ -17,11 +18,14 @@ const {
 
 router
   .route("/")
-  .post(uploadImage, resizeImage, createBrandValidator, addBrand)
+  .post(protect,
+    allowedTo("admin"),uploadImage, resizeImage, createBrandValidator, addBrand)
   .get(getAllBrand);
 router
   .route("/:id")
   .get(getSpecificBrandValidator, getSpecificBrand)
-  .put(uploadImage, resizeImage, updateBrandValidator, updateBrand)
-  .delete(deleteBrandValidator, deleteBrand);
+  .put(protect,
+    allowedTo("admin"),uploadImage, resizeImage, updateBrandValidator, updateBrand)
+  .delete(protect,
+    allowedTo("admin"),deleteBrandValidator, deleteBrand);
 module.exports = router;

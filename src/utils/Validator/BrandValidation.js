@@ -3,7 +3,7 @@ const { default: slugify } = require("slugify");
 const { validatorMiddleware } = require("./ValidatorMiddleware");
 
 exports.getSpecificBrandValidator = [
-  check("id").isMongoId().withMessage("InValid subCategory Id"),
+  check("id").isMongoId().withMessage("InValid Brand Id"),
   validatorMiddleware,
 ];
 
@@ -34,6 +34,6 @@ exports.updateBrandValidator = [
 ];
 
 exports.deleteBrandValidator = [
-  check("id").isMongoId().withMessage("InValid subCategory Id"),
+  check("id").isMongoId().withMessage("InValid Brand Id"),
   validatorMiddleware,
 ];

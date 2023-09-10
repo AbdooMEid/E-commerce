@@ -14,6 +14,7 @@ const {
   updateCategoryValidator,
   deleteCategoryValidator,
 } = require("../../utils/Validator/CategoriesValidation");
+const { protect, allowedTo } = require("../../config/auth");
 
 router.use(
   "/:categoryId/subCategory",
@@ -22,11 +23,25 @@ router.use(
 
 router
   .route("/")
-  .post(uploadImage, resizeImage, createCategoryValidator, addCategory)
+  .post(
+    protect,
+    allowedTo("admin"),
+    uploadImage,
+    resizeImage,
+    createCategoryValidator,
+    addCategory
+  )
   .get(getAllCategories);
 router
   .route("/:id")
   .get(getSpecificCategoryValidator, getSpecificCategory)
-  .put(uploadImage, resizeImage, updateCategoryValidator, updateCategory)
-  .delete(deleteCategoryValidator, deleteCategory);
+  .put(
+    protect,
+    allowedTo("admin"),
+    uploadImage,
+    resizeImage,
+    updateCategoryValidator,
+    updateCategory
+  )
+  .delete(protect, allowedTo("admin"), deleteCategoryValidator, deleteCategory);
 module.exports = router;
