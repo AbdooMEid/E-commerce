@@ -20,7 +20,7 @@ const {
   changePassword,
   updateMyPassword,
   updateMyProfile,
-  deleteMe,
+  deleteMe, activateMe,
 } = require("./user.service");
 
 // Get My Profile Info
@@ -46,7 +46,7 @@ router.put(
 // Deactivate MY Profile
 router.delete("/deleteMe", protect, deleteMe, deleteUser);
 
-
+router.post("/activeMe" , activateMe)
 router
   .route("/changePassword/:id")
   .put(protect, allowedTo("admin"), changePasswordValidator, changePassword);
@@ -58,8 +58,8 @@ router
     allowedTo("admin"),
     uploadImage,
     resizeImage,
-    createUserValidator,
-    addUser
+    addUser,
+    createUserValidator
   )
   .get(protect, getAllUsers);
 

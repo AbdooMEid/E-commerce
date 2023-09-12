@@ -87,7 +87,7 @@ const changePassword = asyncHandling(async (req, res, next) => {
   }
   res.status(200).json({ success: true, data: UpdateDocument });
 });
-//@desc   changePassword Logged In User
+//@desc   changePassword Logged-In User
 //@route  Put /api/v1/User/updateMyPassword
 //@access Privet/Auth
 const updateMyPassword = asyncHandling(async (req, res, next) => {
@@ -107,7 +107,7 @@ const updateMyPassword = asyncHandling(async (req, res, next) => {
   const token = generateToken(user._id);
   res.status(200).json({ success: true, data: user, token });
 });
-//@desc   changePassword Logged In User WithOut (Password & Role)
+//@desc   changePassword Logged-In User WithOut (Password & Role)
 //@route  Put /api/v1/User/updateMyProfile
 //@access Privet/Auth
 const updateMyProfile = asyncHandling(async (req, res, next) => {
@@ -140,25 +140,19 @@ const deleteMe = (req, res, next) => {
 //@route  Delete /api/v1/User/:id
 //@access Privet/Admin
 const deleteUser = deleteHandling(User);
-// //@desc   Update Status Logged In User
+// //@desc   Update Status Logged-In User
 // //@route  Put /api/v1/User/activateMe
 // //@access Privet/Auth
-// const activateMe = asyncHandling(async (req, res, next) => {
-//   const UpdateUser = await User.findByIdAndUpdate(
-//     req.user._id,
-//     {
-//       active: true,
-//     },
-//     {
-//       new: true,
-//     }
-//   );
-//   if (!UpdateUser) {
-//     return next(new ApiError(`not Found for this id`, 404));
-//   }
-//   const token = generateToken(UpdateUser._id);
-//   res.status(200).json({ success: true, data: UpdateUser, token });
-// });
+const activateMe = asyncHandling(async (req, res, next) => {
+  const UpdateUser = await User.findOne({email : req.body.email})
+  if (!UpdateUser) {
+    return next(new ApiError(`not Found for this id`, 404));
+  }
+    UpdateUser.active = true;
+  await UpdateUser.save();
+  const token = generateToken(UpdateUser._id);
+  res.status(200).json({ success: true, data: UpdateUser, token });
+});
 module.exports = {
   addUser,
   getAllUsers,
@@ -172,5 +166,5 @@ module.exports = {
   updateMyPassword,
   updateMyProfile,
   deleteMe,
-  // activateMe,
+  activateMe,
 };
