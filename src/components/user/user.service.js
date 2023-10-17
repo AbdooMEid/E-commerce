@@ -36,7 +36,6 @@ const getAllUsers = getAllHandler(User);
 //@route  Get /api/v1/User/:id
 //@access Privet/Admin
 const getSpecificUser = getSpecificHandler(User);
-
 //@desc   Get Logged In User
 //@route  Get /api/v1/User/getMe
 //@access Privet/Auth
@@ -139,16 +138,23 @@ const deleteMe = (req, res, next) => {
 //@desc   Delete Specific User
 //@route  Delete /api/v1/User/:id
 //@access Privet/Admin
-const deleteUser = deleteHandling(User);
+const deleteUser = asyncHandling(async (req, res, next) => {
+  const { id } = req.params;
+  const deleteUsers = await modelName.findByIdAndUpdate(id, {
+    active: false,
+  });
+  !deleteUsers && next(new ApiError(`not Found User for this id ${id}`, 404));
+  deleteUsers && res.status(204).send();
+});
 // //@desc   Update Status Logged-In User
 // //@route  Put /api/v1/User/activateMe
 // //@access Privet/Auth
 const activateMe = asyncHandling(async (req, res, next) => {
-  const UpdateUser = await User.findOne({email : req.body.email})
+  const UpdateUser = await User.findOne({ email: req.body.email });
   if (!UpdateUser) {
     return next(new ApiError(`not Found for this id`, 404));
   }
-    UpdateUser.active = true;
+  UpdateUser.active = true;
   await UpdateUser.save();
   const token = generateToken(UpdateUser._id);
   res.status(200).json({ success: true, data: UpdateUser, token });

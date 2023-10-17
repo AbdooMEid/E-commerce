@@ -18,6 +18,8 @@ exports.updateHandler = (modelName) => {
         )
       );
     }
+    // Trigger "Save" event when update document
+    UpdateDocument.save();
     res.status(200).json({ success: true, data: UpdateDocument });
   });
 };

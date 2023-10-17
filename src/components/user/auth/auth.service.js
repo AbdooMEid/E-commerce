@@ -44,7 +44,7 @@ const login = asyncHandling(async (req, res, next) => {
   //2- Generate Token
   const token = generateToken(user._id);
 
-  res.status(200).json({ success: true, token });
+  res.status(200).json({ success: true, data: user, token });
 });
 
 module.exports = {

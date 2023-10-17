@@ -2,9 +2,15 @@ const ApiError = require("../../utils/Error/ApiError");
 const asyncHandling = require("express-async-handler");
 const ApiFeatures = require("../../utils/features/ApiFeatures");
 
-exports.getSpecificHandler = (modelName) => {
+exports.getSpecificHandler = (modelName, populationOpt) => {
   return asyncHandling(async (req, res, next) => {
-    const getDoc = await modelName.findById(req.params.id);
+    // 1- build query
+    let query = modelName.findById(req.params.id);
+    if (populationOpt) {
+      query = query.populate(populationOpt);
+    }
+    // 2- Execute query
+    const getDoc = await query;
     if (!getDoc) {
       return next(
         new ApiError(`not Found Document for this id ${req.params.id}`, 404)

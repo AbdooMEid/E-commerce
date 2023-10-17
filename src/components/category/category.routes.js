@@ -16,6 +16,7 @@ const {
 } = require("../../utils/Validator/CategoriesValidation");
 const { protect, allowedTo } = require("../../config/auth");
 
+//Nested Route
 router.use(
   "/:categoryId/subCategory",
   require("../subCategory/subCategory.routes")

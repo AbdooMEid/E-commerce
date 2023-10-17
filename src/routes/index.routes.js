@@ -13,5 +13,14 @@ app.use(
   "/api/v1/auth",
   require("../components/user/auth/forgotPassword.routes")
 );
+app.use("/api/v1/Review", require("../components/review/review.routes"));
+app.use(
+  "/api/v1/WishList",
+  require("../components/user/wishList/wishList.routes")
+);
+app.use(
+  "/api/v1/Address",
+  require("../components/user/address/address.routes")
+);
 
 module.exports = app;

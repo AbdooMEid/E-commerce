@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcryptjs");
-const userSchema = Schema(
+const userSchema = new Schema(
   {
     name: {
       type: String,
@@ -38,6 +38,17 @@ const userSchema = Schema(
       type: Boolean,
       default: true,
     },
+    wishlist: [{ type: Schema.Types.ObjectId, ref: "Product" }],
+    addresses: [
+      {
+        id: { type: Schema.Types.ObjectId },
+        alias: String,
+        details: String,
+        city: String,
+        phone: String,
+        postalCode: String,
+      },
+    ],
   },
   { timestamps: true }
 );

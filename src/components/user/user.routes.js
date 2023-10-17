@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { protect, allowedTo } = require("../../config/auth");
+const {protect, allowedTo} = require("../../config/auth");
 const {
   createUserValidator,
   getSpecificUserValidator,
@@ -46,7 +46,7 @@ router.put(
 // Deactivate MY Profile
 router.delete("/deleteMe", protect, deleteMe, deleteUser);
 
-router.post("/activeMe" , activateMe)
+router.post("/activeMe", activateMe)
 router
   .route("/changePassword/:id")
   .put(protect, allowedTo("admin"), changePasswordValidator, changePassword);

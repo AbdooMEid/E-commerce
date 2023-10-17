@@ -15,6 +15,10 @@ const {
   resizeMultiImages,
   uploadImage,
 } = require("./product.service");
+
+//Nested Route
+router.use("/:productId/Review", require("../review/review.routes"));
+
 router
   .route("/")
   .post(

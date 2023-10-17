@@ -54,7 +54,7 @@ const getAllProduct = getAllHandler(Product, "Product");
 //@desc   Get Specific Product
 //@route  Get /api/v1/Product/:id
 //@access Public
-const getSpecificProduct = getSpecificHandler(Product);
+const getSpecificProduct = getSpecificHandler(Product, "reviews");
 //@desc   Update Specific Product
 //@route  Put /api/v1/Product/:id
 //@access Privet
