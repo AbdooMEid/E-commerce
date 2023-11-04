@@ -22,5 +22,6 @@ app.use(
   "/api/v1/Address",
   require("../components/user/address/address.routes")
 );
+app.use("/api/v1/Coupon", require("../components/coupon/coupon.routes"));
 
 module.exports = app;
