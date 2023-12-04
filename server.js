@@ -16,6 +16,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
 const compression = require("compression");
+const { checkoutWebhook } = require("./src/components/order/orde.service");
 const app = express();
 
 // Enable Other domain to access your application;
@@ -41,6 +42,12 @@ app.use(express.static(path.join(__dirname, "uploads")));
 
 //route mount
 app.use("/", require("./src/routes/index.routes"));
+// checkout webhook
+app.post(
+  "/checkout-webhook",
+  express.raw({ type: "application/json" }),
+  checkoutWebhook
+);
 //not found page
 app.all("*", (req, res, next) => {
   next(new ApiError(`Route Not Found ${req.originalUrl}`, 404));
