@@ -3,16 +3,27 @@ process.on("uncaughtException", (err) => {
 });
 const path = require("path");
 const express = require("express");
-const app = express();
+
 const PORT = process.env.PORT || 3000;
 const dbConnection = require("./src/database/dbConnection");
 const {
   globalMiddlewareError,
 } = require("./src/utils/Error/globalMiddlewareError");
+
 const ApiError = require("./src/utils/Error/ApiError");
 const dotenv = require("dotenv");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const cors = require("cors");
+const compression = require("compression");
+const app = express();
+
+// Enable Other domain to access your application;
+app.use(cors());
+app.options("*", cors());
+
+// compress all responses
+app.use(compression());
 dotenv.config({ path: "./src/config/config.env" });
 // module check http req
 app.use(helmet());

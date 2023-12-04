@@ -24,5 +24,6 @@ app.use(
 );
 app.use("/api/v1/Coupon", require("../components/coupon/coupon.routes"));
 app.use("/api/v1/Cart", require("../components/cart/cart.routes"));
+app.use("/api/v1/Order", require("../components/order/order.routes"));
 
 module.exports = app;

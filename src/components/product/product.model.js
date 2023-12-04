@@ -1,6 +1,6 @@
 const { Schema, model, Types } = require("mongoose");
 
-const ProductSchema = Schema(
+const ProductSchema = new Schema(
   {
     title: {
       type: String,
@@ -66,10 +66,6 @@ const ProductSchema = Schema(
     ratingQuantity: {
       type: Number,
       default: 0,
-    },
-    stock: {
-      type: Number,
-      required: true,
     },
   },
   {
