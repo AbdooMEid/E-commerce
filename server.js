@@ -42,6 +42,7 @@ app.use(express.static(path.join(__dirname, "uploads")));
 
 //route mount
 app.use("/", require("./src/routes/index.routes"));
+
 // checkout webhook
 app.post(
   "/checkout-webhook",
