@@ -4,7 +4,7 @@ process.on("uncaughtException", (err) => {
 const path = require("path");
 const express = require("express");
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 const dbConnection = require("./src/database/dbConnection");
 const {
   globalMiddlewareError,
