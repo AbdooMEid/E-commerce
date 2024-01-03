@@ -218,14 +218,13 @@ const createOrderCard = async (session) => {
 //checkout Webhook
 exports.checkoutWebhook = asyncHandler(async (req, res, next) => {
   const sig = req.headers["stripe-signature"];
+  const payload = req.body;
 
   let event;
 
   try {
-    const body = JSON.stringify(req.body);
-    const rawBody = await getRawBody(body);
     event = stripe.webhooks.constructEvent(
-      raw.body,
+      payload,
       sig,
       process.env.WEBHOOK_SECRET
     );
