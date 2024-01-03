@@ -6,7 +6,6 @@ const Product = require("../product/product.model");
 const Order = require("./order.model");
 const User = require("../user/user.model");
 const { getAllHandler, getSpecificHandler } = require("../Handler/getHandler");
-const getRawBody = require("raw-body");
 
 // @desc   Create Cash Order
 // @route  POST /api/v1/orders/cartId
@@ -216,17 +215,13 @@ const createOrderCard = async (session) => {
 // @route  POST /checkout-webhook
 // @access Privet/User
 //checkout Webhook
-exports.checkoutWebhook = asyncHandler(async (req, res, next) => {
-  let event = req.body;
-  const sig = req.headers["stripe-signature"];
+exports.checkoutWebhook = asyncHandler(async (request, res, next) => {
+  let event = request.body;
+  const sig = request.headers["stripe-signature"];
   const endPointSecret = process.env.WEBHOOK_SECRET;
-  const payload = req.body;
+
   try {
-    event = stripe.webhooks.constructEvent(
-      payload.toString(),
-      sig,
-      endPointSecret
-    );
+    event = stripe.webhooks.constructEvent(request.body, sig, endPointSecret);
   } catch (err) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
