@@ -222,7 +222,7 @@ exports.checkoutWebhook = asyncHandler(async (req, res, next) => {
   let event;
 
   try {
-    const body = await getRawBody(req);
+    const body = await getRawBody(req.body);
     event = stripe.webhooks.constructEvent(
       body,
       sig,
