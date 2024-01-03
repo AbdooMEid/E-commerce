@@ -16,7 +16,6 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
 const compression = require("compression");
-const getRawBody = require("raw-body");
 const { checkoutWebhook } = require("./src/components/order/orde.service");
 const app = express();
 
@@ -50,22 +49,7 @@ app.post(
   express.raw({ type: "application/json" }),
   checkoutWebhook
 );
-// raw bod
-app.use(function (req, res, next) {
-  getRawBody(
-    req,
-    {
-      length: req.headers["content-length"],
-      limit: "1mb",
-      encoding: contentType.parse(req).parameters.charset,
-    },
-    function (err, string) {
-      if (err) return next(err);
-      req.text = string;
-      next();
-    }
-  );
-});
+
 //not found page
 app.all("*", (req, res, next) => {
   next(new ApiError(`Route Not Found ${req.originalUrl}`, 404));
