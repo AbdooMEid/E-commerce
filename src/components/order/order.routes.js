@@ -11,7 +11,7 @@ const {
   checkOutSession,
 } = require("./orde.service");
 const getRawBody = require("raw-body");
-
+const contentType = require("content-type");
 router.use(protect);
 router.use(function (req, res, next) {
   getRawBody(
