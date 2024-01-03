@@ -17,6 +17,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const compression = require("compression");
 const { createOrderCard } = require("./src/components/order/orde.service");
+const stripe = require("stripe");
 const app = express();
 
 // Enable Other domain to access your application;
