@@ -12,7 +12,7 @@ const {
 } = require("./orde.service");
 
 router.use(protect);
-router.post("/checkout-session/:cartId", allowedTo("user"), checkOutSession);
+router.get("/checkout-session/:cartId", allowedTo("user"), checkOutSession);
 router.route("/:cartId").post(allowedTo("user"), createCashOrder);
 router.get(
   "/",

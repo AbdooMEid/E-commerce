@@ -217,17 +217,11 @@ const createOrderCard = async (session) => {
 // @access Privet/User
 //checkout Webhook
 exports.checkoutWebhook = asyncHandler(async (req, res, next) => {
+  let event = req.body;
   const sig = req.headers["stripe-signature"];
-  const payload = getRawBody(req.body);
-  console.log("payload :", { payload });
-  let event;
-
+  const endPointSecret = process.env.WEBHOOK_SECRET;
   try {
-    event = stripe.webhooks.constructEvent(
-      payload,
-      sig,
-      process.env.WEBHOOK_SECRET
-    );
+    event = stripe.webhooks.constructEvent(req.body, sig, endPointSecret);
   } catch (err) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
