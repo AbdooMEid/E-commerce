@@ -6,6 +6,7 @@ const Product = require("../product/product.model");
 const Order = require("./order.model");
 const User = require("../user/user.model");
 const { getAllHandler, getSpecificHandler } = require("../Handler/getHandler");
+const getRawBody = require("raw-body");
 
 // @desc   Create Cash Order
 // @route  POST /api/v1/orders/cartId
@@ -221,6 +222,7 @@ exports.checkoutWebhook = asyncHandler(async (req, res, next) => {
   let event;
 
   try {
+    const rawBody = await getRawBody(req.body);
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
