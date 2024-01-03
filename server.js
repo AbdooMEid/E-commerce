@@ -44,11 +44,7 @@ app.use(express.static(path.join(__dirname, "uploads")));
 app.use("/", require("./src/routes/index.routes"));
 
 // checkout webhook
-app.post(
-  "/checkout-webhook",
-  express.raw({ type: "application/json" }),
-  checkoutWebhook
-);
+app.post("/checkout-webhook", express.raw({ type: "*/*" }), checkoutWebhook);
 
 //not found page
 app.all("*", (req, res, next) => {
