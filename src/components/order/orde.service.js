@@ -4,6 +4,7 @@ const ApiError = require("../../utils/Error/ApiError");
 const Cart = require("../cart/cart.model");
 const Product = require("../product/product.model");
 const Order = require("./order.model");
+const User = require("../user/user.model");
 const { getAllHandler, getSpecificHandler } = require("../Handler/getHandler");
 
 // @desc   Create Cash Order
@@ -179,7 +180,40 @@ exports.checkOutSession = asyncHandler(async (req, res, next) => {
   });
   res.status(200).json({ status: "Success", session });
 });
+const createOrderCard = async (session) => {
+  const cartId = session.client_reference_id;
+  const shippingAddress = session.metadata;
+  const orderPrice = session.amount_total / 100;
+  const cart = await Cart.findById(cartId);
+  const user = await User.findOne({ email: session.customer_email });
+  // create Order with card payment
+  const order = await Order.create({
+    userId: user._id,
+    cartItems: cart.cartItems,
+    shippingAddress,
+    totalOrderPrice: orderPrice,
+    isPaid: true,
+    paidAt: Date.now(),
+    deliveredState: "processing",
+    paymentMethodType: "card",
+  });
+  // 4 - After creating order , decrement product quantity , increment product sold
+  if (order) {
+    let bulkOptions = cart.cartItems.map((item) => ({
+      updateOne: {
+        filter: { _id: item.productId },
+        update: { $inc: { quantity: -item.quantity, sold: +item.quantity } },
+      },
+    }));
+    await Product.bulkWrite(bulkOptions, {});
+    // 5 - Clear Cart depend on cartId
+    await Cart.findByIdAndDelete(cartId);
+  }
+};
 
+// @desc   This webhook will run when stripe payment success paid
+// @route  POST /checkout-webhook
+// @access Privet/User
 //checkout Webhook
 exports.checkoutWebhook = asyncHandler((req, res, next) => {
   const sig = req.headers["stripe-signature"];
@@ -196,7 +230,7 @@ exports.checkoutWebhook = asyncHandler((req, res, next) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
   if (event.type === "checkout.session.completed") {
-    console.log("create order here .....");
-    console.log(event.data.object.client_reference_id);
+    createOrderCard(event.data.object);
   }
+  res.status(200).json({ received: true });
 });
