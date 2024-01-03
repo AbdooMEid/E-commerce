@@ -16,7 +16,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
 const compression = require("compression");
-const { checkoutWebhook } = require("./src/components/order/orde.service");
+const { createOrderCard } = require("./src/components/order/orde.service");
 const app = express();
 
 // Enable Other domain to access your application;
@@ -44,7 +44,25 @@ app.use(express.static(path.join(__dirname, "uploads")));
 app.use("/", require("./src/routes/index.routes"));
 
 // checkout webhook
-app.post("/checkout-webhook", express.raw({ type: "*/*" }), checkoutWebhook);
+app.post(
+  "/checkout-webhook",
+  express.raw({ type: "application/json" }),
+  async (req, res, next) => {
+    let event = req.body;
+    const sig = req.headers["stripe-signature"];
+    const endPointSecret = process.env.WEBHOOK_SECRET;
+
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, endPointSecret);
+    } catch (err) {
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+    if (event.type === "checkout.session.completed") {
+      createOrderCard(event.data.object);
+    }
+    res.status(200).json({ received: true });
+  }
+);
 
 //not found page
 app.all("*", (req, res, next) => {
