@@ -219,8 +219,8 @@ const createOrderCard = async (session) => {
 //checkout Webhook
 exports.checkoutWebhook = asyncHandler(async (req, res, next) => {
   const sig = req.headers["stripe-signature"];
-  const payload = Buffer.from(req.body, "utf8");
-  console.log(payload);
+  const payload = JSON.stringify(req.body);
+  console.log("payload :", { payload });
   let event;
 
   try {
