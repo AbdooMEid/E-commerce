@@ -1,5 +1,4 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
-const getRawBody = require("raw-body");
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../../utils/Error/ApiError");
 const Cart = require("../cart/cart.model");
@@ -222,9 +221,8 @@ exports.checkoutWebhook = asyncHandler(async (req, res, next) => {
   let event;
 
   try {
-    const body = await getRawBody(req.body);
     event = stripe.webhooks.constructEvent(
-      body,
+      req.body,
       sig,
       process.env.WEBHOOK_SECRET
     );
