@@ -6,7 +6,7 @@ const Cart = require("../cart/cart.model");
 const Product = require("../product/product.model");
 const Order = require("./order.model");
 const User = require("../user/user.model");
-const {getAllHandler, getSpecificHandler} = require("../Handler/getHandler");
+const { getAllHandler, getSpecificHandler } = require("../Handler/getHandler");
 
 // @desc   Create Cash Order
 // @route  POST /api/v1/orders/cartId
@@ -52,19 +52,19 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
   if (order) {
     let bulkOptions = cart.cartItems.map((item) => ({
       updateOne: {
-        filter: {_id: item.productId},
-        update: {$inc: {quantity: -item.quantity, sold: +item.quantity}},
+        filter: { _id: item.productId },
+        update: { $inc: { quantity: -item.quantity, sold: +item.quantity } },
       },
     }));
     await Product.bulkWrite(bulkOptions, {});
     // 5 - Clear Cart depend on cartId
     await Cart.findByIdAndDelete(req.params.cartId);
   }
-  res.status(200).json({status: "success", data: order});
+  res.status(200).json({ status: "success", data: order });
 });
 
 exports.filterOrderForLoggedUser = asyncHandler(async (req, res, next) => {
-  if (req.user.role === "user") req.filterObj = {userId: req.user._id};
+  if (req.user.role === "user") req.filterObj = { userId: req.user._id };
   next();
 });
 
@@ -91,7 +91,7 @@ exports.updateOrderToPaid = asyncHandler(async (req, res, next) => {
   order.isPaid = true;
   order.paidAt = Date.now();
   const updateOrder = await order.save();
-  res.status(200).json({status: "success", data: updateOrder});
+  res.status(200).json({ status: "success", data: updateOrder });
 });
 
 // @desc   Update status Order By Admin
@@ -107,7 +107,7 @@ exports.updateOrderToDelivered = asyncHandler(async (req, res, next) => {
   order.isDelivered = true;
   order.deliveredAt = Date.now();
   const updateOrder = await order.save();
-  res.status(200).json({status: "success", data: updateOrder});
+  res.status(200).json({ status: "success", data: updateOrder });
 });
 
 // @desc   Update status Order By Admin
@@ -122,7 +122,7 @@ exports.updateOrderToDeliveredState = asyncHandler(async (req, res, next) => {
   }
   order.deliveredState = req.body.deliveredState;
   const updateOrder = await order.save();
-  res.status(200).json({status: "success", data: updateOrder});
+  res.status(200).json({ status: "success", data: updateOrder });
 });
 
 // @desc   Create checkOut Session from stripe and send it as response
@@ -179,14 +179,14 @@ exports.checkOutSession = asyncHandler(async (req, res, next) => {
     client_reference_id: req.params.cartId,
     metadata: req.body.shippingAddress,
   });
-  res.status(200).json({status: "Success", session});
+  res.status(200).json({ status: "Success", session });
 });
 const createOrderCard = async (session) => {
   const cartId = session.client_reference_id;
   const shippingAddress = session.metadata;
   const orderPrice = session.amount_total / 100;
   const cart = await Cart.findById(cartId);
-  const user = await User.findOne({email: session.customer_email});
+  const user = await User.findOne({ email: session.customer_email });
   // create Order with card payment
   const order = await Order.create({
     userId: user._id,
@@ -202,8 +202,8 @@ const createOrderCard = async (session) => {
   if (order) {
     let bulkOptions = cart.cartItems.map((item) => ({
       updateOne: {
-        filter: {_id: item.productId},
-        update: {$inc: {quantity: -item.quantity, sold: +item.quantity}},
+        filter: { _id: item.productId },
+        update: { $inc: { quantity: -item.quantity, sold: +item.quantity } },
       },
     }));
     await Product.bulkWrite(bulkOptions, {});
@@ -216,7 +216,7 @@ const createOrderCard = async (session) => {
 // @route  POST /checkout-webhook
 // @access Privet/User
 //checkout Webhook
-exports.checkoutWebhook = asyncHandler((req, res, next) => {
+exports.checkoutWebhook = asyncHandler(async (req, res, next) => {
   const sig = req.headers["stripe-signature"];
 
   let event;
@@ -234,5 +234,5 @@ exports.checkoutWebhook = asyncHandler((req, res, next) => {
   if (event.type === "checkout.session.completed") {
     createOrderCard(event.data.object);
   }
-  res.status(200).json({received: true});
+  res.status(200).json({ received: true });
 });
