@@ -7,6 +7,7 @@ const Order = require("./order.model");
 const User = require("../user/user.model");
 const { getAllHandler, getSpecificHandler } = require("../Handler/getHandler");
 const getRawBody = require("raw-body");
+const { Buffer } = require("buffer");
 
 // @desc   Create Cash Order
 // @route  POST /api/v1/orders/cartId
@@ -218,8 +219,8 @@ const createOrderCard = async (session) => {
 //checkout Webhook
 exports.checkoutWebhook = asyncHandler(async (req, res, next) => {
   const sig = req.headers["stripe-signature"];
-  const payload = req.body;
-
+  const payload = Buffer.from(req.body, "utf8");
+  console.log(payload);
   let event;
 
   try {
