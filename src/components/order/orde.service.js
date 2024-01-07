@@ -180,7 +180,7 @@ exports.checkOutSession = asyncHandler(async (req, res, next) => {
   });
   res.status(200).json({ status: "Success", session });
 });
-exports.createOrderCard = async (session) => {
+const createOrderCard = async (session) => {
   const cartId = session.client_reference_id;
   const shippingAddress = session.metadata;
   const orderPrice = session.amount_total / 100;
@@ -215,18 +215,19 @@ exports.createOrderCard = async (session) => {
 // @route  POST /checkout-webhook
 // @access Privet/User
 //checkout Webhook
-// exports.checkoutWebhook = asyncHandler(async (req, res, next) => {
-//   let event = req.body;
-//   const sig = req.headers["stripe-signature"];
-//   const endPointSecret = process.env.WEBHOOK_SECRET;
-//
-//   try {
-//     event = stripe.webhooks.constructEvent(req.body, sig, endPointSecret);
-//   } catch (err) {
-//     return res.status(400).send(`Webhook Error: ${err.message}`);
-//   }
-//   if (event.type === "checkout.session.completed") {
-//     createOrderCard(event.data.object);
-//   }
-//   res.status(200).json({ received: true });
-// });
+exports.checkoutWebhook = asyncHandler(async (req, res, next) => {
+  let event;
+  const sig = req.headers["stripe-signature"];
+  const endPointSecret = process.env.WEBHOOK_SECRET;
+  const payload = JSON.stringify(req.body);
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endPointSecret);
+  } catch (err) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+  if (event.type === "checkout.session.completed") {
+    createOrderCard(event.data.object);
+  }
+  res.status(200).json({ received: true });
+});
