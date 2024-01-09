@@ -35,6 +35,14 @@ if (process.env.ENV_MODE === "development") {
   app.use(morgan("dev"));
   console.log(`mode : ${process.env.ENV_MODE}`);
 }
+
+// checkout webhook
+app.post(
+  "/checkout-webhook",
+  express.raw({ type: "application/json" }),
+  checkoutWebhook
+);
+
 //middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -42,9 +50,6 @@ app.use(express.static(path.join(__dirname, "uploads")));
 
 //route mount
 app.use("/", require("./src/routes/index.routes"));
-
-// checkout webhook
-app.post("/checkout-webhook", express.raw({ type: 'application/json'}), checkoutWebhook);
 
 //not found page
 app.all("*", (req, res, next) => {
