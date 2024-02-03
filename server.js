@@ -16,6 +16,9 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
 const compression = require("compression");
+const rateLimit = require("express-rate-limit");
+const hpp = require("hpp");
+const mongoSanitize = require("express-mongo-sanitize");
 const { checkoutWebhook } = require("./src/components/order/orde.service");
 const app = express();
 
@@ -26,6 +29,8 @@ app.options("*", cors());
 // compress all responses
 app.use(compression());
 dotenv.config({ path: "./src/config/config.env" });
+// To Apply Sanitization Middleware
+app.use(mongoSanitize());
 // module check http req
 app.use(helmet());
 // DataBase Connections
@@ -36,6 +41,28 @@ if (process.env.ENV_MODE === "development") {
   console.log(`mode : ${process.env.ENV_MODE}`);
 }
 
+// Limit each IP to 100 requests per `window` (here, per 15 minutes).
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 60,
+  message: "Too many requests from this IP, please try again after 15 minutes",
+});
+
+// Apply the rate limiting middleware to all requests.
+app.use("/api", limiter);
+
+// Middleware to protect against HTTP Parameter Pollution attacks
+app.use(
+  hpp({
+    whitelist: [
+      "price",
+      "quantity",
+      "sold",
+      "ratingAverages",
+      "ratingQuantity",
+    ],
+  })
+);
 // checkout webhook
 app.post(
   "/checkout-webhook",
@@ -44,8 +71,8 @@ app.post(
 );
 
 //middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "20kb" }));
+app.use(express.urlencoded({ extended: true, limit: "20kb" }));
 app.use(express.static(path.join(__dirname, "uploads")));
 
 //route mount

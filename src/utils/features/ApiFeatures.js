@@ -27,6 +27,7 @@ class ApiFeatures {
 
   sort() {
     if (this.queryString.sort) {
+      console.log(this.queryString.sort);
       let sortBy = this.queryString.sort.split(",").join(" ");
       this.mongooseQuery = this.mongooseQuery.sort(sortBy);
     } else {

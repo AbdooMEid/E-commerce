@@ -5,6 +5,7 @@ const sharp = require("sharp");
 const bcrypt = require("bcryptjs");
 const ApiError = require("../../../utils/Error/ApiError");
 const generateToken = require("../../../utils/generateToken");
+const { sanitizeUser } = require("../../../utils/sanitizeData");
 
 // upload single Image
 const uploadImage = uploadSingleImage("imageProfile");
@@ -30,7 +31,7 @@ const register = asyncHandling(async (req, res, next) => {
   const user = await User.create(req.body);
   //2- Generate Token
   const token = generateToken(user._id);
-  res.status(201).json({ success: true, data: user, token });
+  res.status(201).json({ success: true, data: sanitizeUser(user), token });
 });
 //@desc   Login User
 //@route  Post /api/v1/auth/login
@@ -39,11 +40,12 @@ const login = asyncHandling(async (req, res, next) => {
   // 1- Register User
   const user = await User.findOne({ email: req.body.email });
   if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
-    return next(new ApiError("Incorrect Password Or E-mail"));
+    return next(new ApiError("Incorrect Password Or E-mail", 401));
   }
   //2- Generate Token
   const token = generateToken(user._id);
-
+  // Delete password from response
+  delete user._doc.password;
   res.status(200).json({ success: true, data: user, token });
 });
 

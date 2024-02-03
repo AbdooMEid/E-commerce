@@ -6,15 +6,15 @@ const ApiError = require("../Error/ApiError");
 // const bcrypt = require("bcryptjs");
 
 exports.registerValidator = [
-  check("name")
-    .notEmpty()
-    .withMessage("User name is required")
-    .isLength({ min: 3 })
-    .withMessage("Too short User name")
-    .custom((val, { req }) => {
-      req.body.slug = slugify(val);
-      return true;
-    }),
+  // check("name")
+  //   .notEmpty()
+  //   .withMessage("User name is required")
+  //   .isLength({ min: 3 })
+  //   .withMessage("Too short User name")
+  //   .custom((val, { req }) => {
+  //     req.body.slug = slugify(val);
+  //     return true;
+  //   }),
 
   check("password")
     .notEmpty()
